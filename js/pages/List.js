@@ -103,7 +103,7 @@ export default {
                         Achieved the record without using hacks.
                     </p>
                     <p>
-                        Achieved the record on the level that is listed on the site - however, LDM's provided by a seperate level are allowed for use.
+                        Achieved the record on the level that is listed on the site - however, LDMs provided by a seperate level are allowed for use.
                     </p>
                     <p>
                         Have either source audio or clicks/taps in the video. Edited audio only does not count.
