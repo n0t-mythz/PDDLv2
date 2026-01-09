@@ -21,39 +21,26 @@ export default {
             <Spinner></Spinner>
         </main>
         <main v-else class="page-list">
-                    <div class="og">
-                        <p class="type-label-md">Website layout made by <a href="https://tsl.pages.dev/" target="_blank">TheShittyList</a></p>
-                    </div>
-                    <template v-if="editors">
-                        <h3>List Editors</h3>
-                        <ol class="editors">
-                            <li v-for="editor in editors">
-                                <img :src="\`/assets/\${roleIconMap[editor.role]}\${store.dark ? '-dark' : ''}.svg\`" :alt="editor.role">
-                                <a v-if="editor.link" class="type-label-lg link" target="_blank" :href="editor.link">{{ editor.name }}</a>
-                                <p v-else>{{ editor.name }}</p>
-                            </li>
-                        </ol>
-                    </template>
-                    <h3>Submission Requirements:</h3>
-                    <p>
-                        Achieved the record without using hacks.
-                    </p>
-                    <p>
-                        Achieved the record on the level that is listed on the site - however, LDMs provided by a seperate level are allowed for use.
-                    </p>
-                    <p>
-                        Have either source audio or clicks/taps in the video. Edited audio only does not count.
-                    </p>
-                    <p>
-                        Do not use secret routes or bug routes
-                    </p>
-                    <p>
-                        Once a level falls onto the Extended List, records for said level will no longer be accepted.
-                    </p>
-                    <p>
-                        packs test test
-                    </p>
-                </div>
+        <div>
+            <h3>Submission Requirements:</h3>
+                <p>
+                    Achieved the record without using hacks.
+                </p>
+                <p>
+                    Achieved the record on the level that is listed on the site - however, LDMs provided by a seperate level are allowed for use.
+                </p>
+                <p>
+                    Have either source audio or clicks/taps in the video. Edited audio only does not count.
+                </p>
+                <p>
+                    Do not use secret routes or bug routes
+                </p>
+                <p>
+                    Once a level falls onto the Extended List, records for said level will no longer be accepted.
+                </p>
+                <p>
+                    packs test test
+                </p>
             </div>
         </main>
     `,
