@@ -1,101 +1,110 @@
-import { store } from "../main.js";
-import { embed } from "../util.js";
-import { score } from "../score.js";
-import { fetchEditors, fetchList } from "../content.js";
+import { fetchLeaderboard } from '../content.js';
+import { localize } from '../util.js';
 
-import Spinner from "../components/Spinner.js";
-import LevelAuthors from "../components/List/LevelAuthors.js";
-
-const roleIconMap = {
-    owner: "crown",
-    admin: "user-gear",
-    helper: "user-shield",
-    dev: "code",
-    trial: "user-lock",
-};
+import Spinner from '../components/Spinner.js';
 
 export default {
-    components: { Spinner, LevelAuthors },
+    components: {
+        Spinner,
+    },
+    data: () => ({
+        leaderboard: [],
+        loading: true,
+        selected: 0,
+        err: [],
+    }),
     template: `
         <main v-if="loading">
             <Spinner></Spinner>
         </main>
-        <main v-else class="page-list">
-        <div>
-            <h3>Submission Requirements:</h3>
-                <p>
-                    Achieved the record without using hacks.
-                </p>
-                <p>
-                    Achieved the record on the level that is listed on the site - however, LDMs provided by a seperate level are allowed for use.
-                </p>
-                <p>
-                    Have either source audio or clicks/taps in the video. Edited audio only does not count.
-                </p>
-                <p>
-                    Do not use secret routes or bug routes
-                </p>
-                <p>
-                    Once a level falls onto the Extended List, records for said level will no longer be accepted.
-                </p>
-                <p>
-                    packs test test
-                </p>
+        <main v-else class="page-leaderboard-container">
+            <div class="page-leaderboard">
+                <div class="error-container">
+                    <p class="error" v-if="err.length > 0">
+                        Leaderboard may be incorrect, as the following levels could not be loaded: {{ err.join(', ') }}
+                    </p>
+                </div>
+                <div class="board-container">
+                    <table class="board">
+                        <tr v-for="(ientry, i) in leaderboard">
+                            <td class="rank">
+                                <p class="type-label-lg">#{{ i + 1 }}</p>
+                            </td>
+                            <td class="total">
+                                <p class="type-label-lg">{{ localize(ientry.total) }}</p>
+                            </td>
+                            <td class="user" :class="{ 'active': selected == i }">
+                                <button @click="selected = i">
+                                    <span class="type-label-lg">{{ ientry.user }}</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="player-container">
+                    <div class="player">
+                        <h1>#{{ selected + 1 }} {{ entry.user }}</h1>
+                        <h3>{{ entry.total }}</h3>
+                        <h2 v-if="entry.verified.length > 0">Verified ({{ entry.verified.length}})</h2>
+                        <table class="table">
+                            <tr v-for="score in entry.verified">
+                                <td class="rank">
+                                    <p>#{{ score.rank }}</p>
+                                </td>
+                                <td class="level">
+                                    <a class="type-label-lg" target="_blank" :href="score.link">{{ score.level }}</a>
+                                </td>
+                                <td class="score">
+                                    <p>+{{ localize(score.score) }}</p>
+                                </td>
+                            </tr>
+                        </table>
+                        <h2 v-if="entry.completed.length > 0">Completed ({{ entry.completed.length }})</h2>
+                        <table class="table">
+                            <tr v-for="score in entry.completed">
+                                <td class="rank">
+                                    <p>#{{ score.rank }}</p>
+                                </td>
+                                <td class="level">
+                                    <a class="type-label-lg" target="_blank" :href="score.link">{{ score.level }}</a>
+                                </td>
+                                <td class="score">
+                                    <p>+{{ localize(score.score) }}</p>
+                                </td>
+                            </tr>
+                        </table>
+                        <h2 v-if="entry.progressed.length > 0">Progressed ({{entry.progressed.length}})</h2>
+                        <table class="table">
+                            <tr v-for="score in entry.progressed">
+                                <td class="rank">
+                                    <p>#{{ score.rank }}</p>
+                                </td>
+                                <td class="level">
+                                    <a class="type-label-lg" target="_blank" :href="score.link">{{ score.percent }}% {{ score.level }}</a>
+                                </td>
+                                <td class="score">
+                                    <p>+{{ localize(score.score) }}</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
             </div>
         </main>
     `,
-    data: () => ({
-        list: [],
-        editors: [],
-        loading: true,
-        selected: 0,
-        errors: [],
-        roleIconMap,
-        store
-    }),
     computed: {
-        level() {
-            return this.list[this.selected][0];
-        },
-        video() {
-            if (!this.level.showcase) {
-                return embed(this.level.verification);
-            }
-
-            return embed(
-                this.toggledShowcase
-                    ? this.level.showcase
-                    : this.level.verification
-            );
+        entry() {
+            return this.leaderboard[this.selected];
         },
     },
     async mounted() {
+        const [leaderboard, err] = await fetchLeaderboard();
+        this.leaderboard = leaderboard;
+        this.err = err;
         // Hide loading spinner
-        this.list = await fetchList();
-        this.editors = await fetchEditors();
-
-        // Error handling
-        if (!this.list) {
-            this.errors = [
-                "Failed to load list. Retry in a few minutes or notify list staff.",
-            ];
-        } else {
-            this.errors.push(
-                ...this.list
-                    .filter(([_, err]) => err)
-                    .map(([_, err]) => {
-                        return `Failed to load level. (${err}.json)`;
-                    })
-            );
-            if (!this.editors) {
-                this.errors.push("Failed to load list editors.");
-            }
-        }
-
         this.loading = false;
     },
     methods: {
-        embed,
-        score,
+        localize,
     },
 };
