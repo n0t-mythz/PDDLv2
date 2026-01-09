@@ -114,6 +114,9 @@ export default {
                     <p>
                         Once a level falls onto the Extended List, records for said level will no longer be accepted.
                     </p>
+                    <p>
+                        packs test test
+                    </p>
                 </div>
             </div>
         </main>
