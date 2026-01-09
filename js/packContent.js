@@ -40,15 +40,3 @@ export async function fetchEditors() {
         return null;
     }
 }
-
-export async function fetchLeaderboard() {
-    const pack = await fetchPacks();
-
-    const scoreMap = {};
-    const errs = [];
-    pack.forEach(([pack, err], rank) => {
-        if (err) {
-            errs.push(err);
-            return;
-        }
-}
