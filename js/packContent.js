@@ -1,12 +1,12 @@
-const dir = '/data';
+const dir2 = '/data';
 
 export async function fetchPacks() {
-    const packsResult = await fetch(`${dir}/_packs.json`);
+    const packsResult = await fetch(`${dir2}/_packs.json`);
     try {
         const packs = await packsResult.json();
         return await Promise.all(
             packs.map(async (path, rank) => {
-                const packsResult = await fetch(`${dir}/${path}.json`);
+                const packsResult = await fetch(`${dir2}/${path}.json`);
                 try {
                     const pack = await packsResult.json();
                     return [
@@ -33,7 +33,7 @@ export async function fetchPacks() {
 
 export async function fetchEditors() {
     try {
-        const editorsResults = await fetch(`${dir}/_editors.json`);
+        const editorsResults = await fetch(`${dir2}/_editors.json`);
         const editors = await editorsResults.json();
         return editors;
     } catch {
